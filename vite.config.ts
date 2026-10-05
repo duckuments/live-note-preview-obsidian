@@ -11,6 +11,13 @@ export default defineConfig({
       wasm: true
     })
   ],
+  server: {
+    // Dev: forward note fetches to the backend resolver so /api is same-origin
+    // like it is in production (SPA + backend behind one host).
+    proxy: {
+      '/api': 'http://localhost:8787'
+    }
+  },
   resolve: {
     alias: [
       {

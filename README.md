@@ -11,7 +11,7 @@ For more details, check out [the blog post](https://www.devas.life/how-to-build-
 
 ## Stack
 
-- [Bun — A fast all-in-one JavaScript runtime](https://bun.sh/)
+- [pnpm](https://pnpm.io/) for package management; [Node.js](https://nodejs.org/) (>=22) runs the backend resolver directly via its TypeScript strip-types support.
 - [`framer-motion`](https://www.framer.com/motion/) for animations.
 - [`zustand`](https://zustand-demo.pmnd.rs/) for state management.
 - [`kuma-ui`](https://www.kuma-ui.com/) for building UI components

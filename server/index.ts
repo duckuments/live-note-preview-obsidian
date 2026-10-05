@@ -7,9 +7,11 @@
  * holds the plaintext markdown, so the backend does no decryption or chunk
  * assembly. CouchDB credentials stay server-side.
  *
- * Run: bun run server/index.ts        (serve)
- *      bun run server/index.ts --check (self-check, no network)
+ * Run: node server/index.ts         (serve; Node >=22 runs .ts directly)
+ *      node server/index.ts --check  (self-check, no network)
  */
+import { createServer, type ServerResponse, type IncomingMessage } from "node:http";
+import { pathToFileURL } from "node:url";
 
 const env = {
   couchUrl: (process.env.COUCHDB_URL ?? "http://localhost:5984").replace(/\/+$/, ""),
@@ -42,25 +44,27 @@ export async function fetchPublicNote(slug: string): Promise<PublicNote | null> 
   return { markdown: doc.markdown, title: doc.title ?? "" };
 }
 
-const json = (body: unknown, status = 200) =>
-  new Response(JSON.stringify(body), {
-    status,
-    headers: { "content-type": "application/json", "access-control-allow-origin": "*" },
+function send(res: ServerResponse, status: number, body: unknown) {
+  res.writeHead(status, {
+    "content-type": "application/json",
+    "access-control-allow-origin": "*",
   });
+  res.end(JSON.stringify(body));
+}
 
-async function handle(req: Request): Promise<Response> {
-  const { pathname } = new URL(req.url);
+async function handle(req: IncomingMessage, res: ServerResponse) {
+  const pathname = new URL(req.url ?? "/", "http://localhost").pathname;
   const match = pathname.match(/^\/api\/note\/([^/]+)$/);
-  if (!match) return json({ error: "not found" }, 404);
+  if (!match) return send(res, 404, { error: "not found" });
 
   const slug = decodeURIComponent(match[1]);
   try {
     const note = await fetchPublicNote(slug);
-    if (!note) return json({ error: "not found" }, 404);
-    return json(note);
+    if (!note) return send(res, 404, { error: "not found" });
+    send(res, 200, note);
   } catch (err) {
     console.error("resolve failed:", err);
-    return json({ error: "upstream error" }, 502);
+    send(res, 502, { error: "upstream error" });
   }
 }
 
@@ -73,11 +77,12 @@ function selfCheck() {
   console.log("selfCheck ok");
 }
 
-if (import.meta.main) {
+if (import.meta.url === pathToFileURL(process.argv[1]).href) {
   if (process.argv.includes("--check")) {
     selfCheck();
   } else {
-    Bun.serve({ port: env.port, fetch: handle });
-    console.log(`resolver on :${env.port} -> ${env.couchUrl}/${env.db}`);
+    createServer((req, res) => void handle(req, res)).listen(env.port, () => {
+      console.log(`resolver on :${env.port} -> ${env.couchUrl}/${env.db}`);
+    });
   }
 }

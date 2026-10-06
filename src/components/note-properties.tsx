@@ -14,8 +14,8 @@ const PropertyValue: React.FC<{ value: unknown }> = ({ value }) => {
             py="0.15em"
             fontSize="0.85em"
             borderRadius="0.4em"
-            backgroundColor="var(--color-neutral-100)"
-            color="var(--color-neutral-700)"
+            backgroundColor="var(--color-muted)"
+            color="var(--color-fg)"
           >
             {String(item)}
           </Box>
@@ -28,9 +28,10 @@ const PropertyValue: React.FC<{ value: unknown }> = ({ value }) => {
 export const NoteProperties: React.FC = () => {
   const { properties } = useContentStore()
 
-  // Skip `title` (shown by <PageTitle />) and empty values.
+  // Skip `title` (shown by <PageTitle />), the internal `slug`, and empty values.
   const entries = Object.entries(properties ?? {}).filter(
-    ([key, value]) => key !== 'title' && value != null && value !== ''
+    ([key, value]) =>
+      key !== 'title' && key !== 'slug' && value != null && value !== ''
   )
   if (entries.length === 0) return null
 
@@ -41,8 +42,7 @@ export const NoteProperties: React.FC = () => {
       px="1em"
       py="0.75em"
       borderRadius="0.4em"
-      border="1px solid var(--color-neutral-200)"
-      backgroundColor="var(--color-neutral-50)"
+      border="1px solid var(--color-muted)"
     >
       {entries.map(([key, value]) => (
         <HStack key={key} alignItems="flex-start" py="0.3em" gap="1em">
@@ -51,7 +51,7 @@ export const NoteProperties: React.FC = () => {
             width="8em"
             fontSize="0.9em"
             fontWeight="var(--font-weights-medium)"
-            color="var(--color-neutral-500)"
+            color="var(--outline-default-fg)"
             textTransform="capitalize"
           >
             {key}

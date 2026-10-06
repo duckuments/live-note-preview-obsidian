@@ -4,6 +4,7 @@ import { MarkdownView } from '@/components/markdown-view'
 import { Container } from './atoms/container'
 import { MainContent } from './components/main-content'
 import { MarkdownOutlineView } from './components/markdown-outline-view'
+import { NoteProperties } from './components/note-properties'
 import { PageTitle } from './components/page-title'
 
 function App() {
@@ -11,6 +12,7 @@ function App() {
     <Container>
       <MainContent>
         <PageTitle />
+        <NoteProperties />
         <HStack gap={[0, 0, 0, '1em', '2em']}>
           <Box flexGrow={1} minWidth={0}>
             <MarkdownView />

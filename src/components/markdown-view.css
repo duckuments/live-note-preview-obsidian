@@ -42,8 +42,17 @@
     margin-bottom: 10px;
   }
 
+  :not(pre) > code {
+    padding: 0.2em 0.4em;
+    font-size: 0.9em;
+    border-radius: 6px;
+    background: rgba(255, 255, 255, 0.1);
+  }
+
   pre {
     overflow: auto;
+    padding: 1em;
+    border-radius: 6px;
   }
 
   pre > code {
@@ -51,7 +60,6 @@
     margin: 0;
     word-break: normal;
     white-space: pre;
-    background: transparent;
     border: 0;
   }
 }

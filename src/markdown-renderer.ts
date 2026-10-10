@@ -1,4 +1,6 @@
+import 'highlight.js/styles/github-dark.css'
 import * as jsxRuntime from 'react/jsx-runtime'
+import rehypeHighlight from 'rehype-highlight'
 import rehype2react, { Components as JSXComponents } from 'rehype-react'
 import rehypeSlug from 'rehype-slug'
 import frontmatter from 'remark-frontmatter'
@@ -34,6 +36,7 @@ export class MarkdownRenderer {
       .use(remark2rehype, {
         allowDangerousHtml: true
       })
+      .use(rehypeHighlight, { detect: true })
       .use(rehypeSlug)
     const renderer = rehypedRemark.use(rehype2react, {
       Fragment: jsxRuntime.Fragment as any,

@@ -1,0 +1,73 @@
+
+name: CI/CD
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+concurrency:
+  group: production-deploy
+  cancel-in-progress: false
+
+jobs:
+  ci:
+    name: Test and Build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Enable pnpm
+        run: corepack enable
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Run lint
+        run: pnpm lint
+
+      - name: Build application
+        run: pnpm build
+
+  deploy:
+    name: Deploy to Server
+    needs: ci
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Deploy over SSH
+        env:
+          SERVER_HOST: ${{ secrets.SERVER_HOST }}
+          SERVER_USER: ${{ secrets.SERVER_USER }}
+          SERVER_SSH_KEY: ${{ secrets.SERVER_SSH_KEY }}
+          # Public host key of the server (/etc/ssh/ssh_host_ed25519_key.pub),
+          # pinned under an alias so it matches whatever SERVER_HOST holds.
+          SERVER_HOST_KEY: ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILq/vMSmERMvcfe0FAGzdhuSyIktvFsirD1Rh4sD1Snp
+        run: |
+          mkdir -p ~/.ssh
+          chmod 700 ~/.ssh
+
+          printf '%s\n' "$SERVER_SSH_KEY" \
+            > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+
+          printf 'deploy-server %s\n' "$SERVER_HOST_KEY" \
+            > ~/.ssh/known_hosts
+          chmod 644 ~/.ssh/known_hosts
+
+          ssh \
+            -i ~/.ssh/deploy_key \
+            -o StrictHostKeyChecking=yes \
+            -o HostKeyAlias=deploy-server \
+            -o UserKnownHostsFile=~/.ssh/known_hosts \
+            "$SERVER_USER@$SERVER_HOST" \
+            '. "$HOME/.nvm/nvm.sh" &&
+             cd /root/live-note-preview-obsidian &&
+             git pull &&
+             corepack pnpm install --frozen-lockfile &&
+             corepack pnpm build &&
+             pm2 restart obsidian-note-api && pm2 restart obsidian-note-web'
+

@@ -39,7 +39,9 @@ export const useContentStore = create<ContentState>(set => ({
       visit(mdast, 'yaml', node => {
         const frontmatter = YAML.parse(node.value)
         properties = frontmatter ?? null
-        title = frontmatter?.title || ''
+        // YAML can yield a non-string (e.g. an unfilled `{ title }` template
+        // parses as an object); rendering that as a React child crashes the app.
+        title = typeof frontmatter?.title === 'string' ? frontmatter.title : ''
         return EXIT
       })
 

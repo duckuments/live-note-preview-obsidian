@@ -17,7 +17,7 @@ interface ContentState {
   title: string | null
   markdown: string | null
   properties: Record<string, unknown> | null
-  render: (markdown: string) => Promise<void>
+  render: (markdown: string, fallbackTitle?: string) => Promise<void>
   lastError: Error | null | undefined
 }
 
@@ -30,13 +30,15 @@ export const useContentStore = create<ContentState>(set => ({
   markdown: null,
   properties: null,
   lastError: null,
-  render: async (markdown: string) => {
+  render: async (markdown: string, fallbackTitle = '') => {
     set({ markdown })
     try {
       const { MarkdownRenderer } = await import('@/markdown-renderer')
       const renderer = new MarkdownRenderer()
       const { result: dom, mdast, hast } = await renderer.render(markdown)
-      let title = ''
+      // Obsidian titles live in the file name, which the API sends alongside the
+      // markdown; a frontmatter `title` still wins when present.
+      let title = fallbackTitle
       let properties: Record<string, unknown> | null = null
 
       visit(mdast, 'yaml', node => {
@@ -44,7 +46,8 @@ export const useContentStore = create<ContentState>(set => ({
         properties = frontmatter ?? null
         // YAML can yield a non-string (e.g. an unfilled `{ title }` template
         // parses as an object); rendering that as a React child crashes the app.
-        title = typeof frontmatter?.title === 'string' ? frontmatter.title : ''
+        if (typeof frontmatter?.title === 'string' && frontmatter.title)
+          title = frontmatter.title
         return EXIT
       })
 

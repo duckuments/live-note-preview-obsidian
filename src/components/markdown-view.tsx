@@ -25,9 +25,12 @@ export const MarkdownView: React.FC = () => {
         const res = await fetch(`/api/note/${encodeURIComponent(slug)}`)
         if (res.status === 404) return !cancelled && setStatus('notfound')
         if (!res.ok) throw new Error(`HTTP ${res.status}`)
-        const { markdown } = (await res.json()) as { markdown: string }
+        const { markdown, title } = (await res.json()) as {
+          markdown: string
+          title?: string
+        }
         if (cancelled) return
-        await render(markdown)
+        await render(markdown, title)
         if (!cancelled) setStatus('ready')
       } catch (e) {
         console.error('Failed to load note:', e)

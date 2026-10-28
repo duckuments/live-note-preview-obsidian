@@ -3,6 +3,7 @@ import { Box, HStack } from '@kuma-ui/core'
 import { MarkdownView } from '@/components/markdown-view'
 import { Container } from './atoms/container'
 import { MainContent } from './components/main-content'
+import { DownloadButton } from './components/download-button'
 import { MarkdownOutlineView } from './components/markdown-outline-view'
 import { NoteProperties } from './components/note-properties'
 import { PageTitle } from './components/page-title'
@@ -11,7 +12,12 @@ function App() {
   return (
     <Container>
       <MainContent>
-        <PageTitle />
+        <HStack alignItems="center" justifyContent="space-between" gap="1em">
+          <PageTitle />
+          <Box pr="1em">
+            <DownloadButton />
+          </Box>
+        </HStack>
         <NoteProperties />
         <HStack gap={[0, 0, 0, '1em', '2em']}>
           <Box flexGrow={1} minWidth={0}>

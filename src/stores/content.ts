@@ -15,6 +15,7 @@ interface ContentState {
   mdast: MdastRoot | null
   hast: HastRoot | null
   title: string | null
+  markdown: string | null
   properties: Record<string, unknown> | null
   render: (markdown: string) => Promise<void>
   lastError: Error | null | undefined
@@ -26,9 +27,11 @@ export const useContentStore = create<ContentState>(set => ({
   mdast: null,
   hast: null,
   title: null,
+  markdown: null,
   properties: null,
   lastError: null,
   render: async (markdown: string) => {
+    set({ markdown })
     try {
       const { MarkdownRenderer } = await import('@/markdown-renderer')
       const renderer = new MarkdownRenderer()
@@ -54,6 +57,7 @@ export const useContentStore = create<ContentState>(set => ({
         mdast: null,
         hast: null,
         title: null,
+        markdown: null,
         properties: null,
         lastError: new Error('Failed to render Markdown')
       })

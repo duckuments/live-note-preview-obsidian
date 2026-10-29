@@ -27,6 +27,7 @@ html {
 
 body {
   margin: 0;
-  width: 100vw;
+  width: 100%;
   min-height: 100vh;
+  display: flow-root; /* contain child top-margin so it doesn't push past 100vh */
 }

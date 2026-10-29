@@ -16,25 +16,35 @@
     line-height: 1.25;
   }
 
+  /* Distinct accent per heading level, drawn from the token palette. */
+  h1 {
+    color: var(--color-blue-400);
+  }
+
   h2 {
     padding-bottom: 0.3em;
     font-size: 1.5em;
+    color: var(--color-cyan-400);
   }
 
   h3 {
     font-size: 1.25em;
+    color: var(--color-teal-400);
   }
 
   h4 {
     font-size: 1em;
+    color: var(--color-green-400);
   }
 
   h5 {
     font-size: 0.875em;
+    color: var(--color-amber-400);
   }
 
   h6 {
     font-size: 0.85em;
+    color: var(--color-rose-400);
   }
 
   p {

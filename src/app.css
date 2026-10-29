@@ -3,13 +3,14 @@
 }
 
 :root {
-  --page-background: var(--color-gray-950);
+  /* AMOLED dark theme: true-black body, near-black card lifted just enough to read. */
+  --page-background: var(--color-black);
   --color-fg: var(--color-gray-200);
   --color-primary: var(--color-blue-500);
   --color-active: var(--color-pink-500);
   --color-muted: hsl(var(--hsl-gray-200) / 10%);
-  --main-content-bg: var(--color-gray-900);
-  --main-content-box-shadow: hsl(var(--hsl-gray-50) / 0.14) 0px 0px 0px 1px;
+  --main-content-bg: var(--color-neutral-950);
+  --main-content-box-shadow: hsl(var(--hsl-gray-50) / 0.16) 0px 0px 0px 1px;
   --outline-active-fg: var(--color-fg);
   --outline-default-fg: var(--color-gray-500);
 }

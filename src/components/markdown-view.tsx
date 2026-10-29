@@ -16,6 +16,20 @@ export const MarkdownView: React.FC = () => {
   useEffect(() => {
     const slug = slugFromPath()
     if (!slug) {
+      // In dev there's usually no backend/slug — fall back to the bundled dev
+      // note so the viewer can be worked on with `pnpm dev` alone.
+      if (import.meta.env.DEV) {
+        let cancelled = false
+        ;(async () => {
+          const { default: devNote } = await import('@/dev-note.md?raw')
+          if (cancelled) return
+          await render(devNote)
+          if (!cancelled) setStatus('ready')
+        })()
+        return () => {
+          cancelled = true
+        }
+      }
       setStatus('notfound')
       return
     }

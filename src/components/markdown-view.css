@@ -12,8 +12,9 @@
   h6 {
     margin-top: 24px;
     margin-bottom: 16px;
-    font-weight: 600;
+    font-weight: 700;
     line-height: 1.25;
+    text-transform: capitalize;
   }
 
   /* Distinct accent per heading level, drawn from the token palette. */

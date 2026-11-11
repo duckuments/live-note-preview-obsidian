@@ -1,4 +1,11 @@
 .markdown-view {
+  /* Local palette, all drawn from the token set so it tracks the dark theme. */
+  --md-border: hsl(var(--hsl-gray-200) / 15%);
+  --md-surface: hsl(var(--hsl-gray-200) / 4%);
+  --md-surface-strong: hsl(var(--hsl-gray-200) / 8%);
+  --md-link: var(--color-sky-400);
+  --md-accent: var(--color-blue-400);
+
   margin: 0;
   line-height: 1.8;
   word-wrap: break-word;
@@ -26,6 +33,7 @@
     padding-bottom: 0.3em;
     font-size: 1.5em;
     color: var(--color-cyan-400);
+    border-bottom: 1px solid var(--md-border);
   }
 
   h3 {
@@ -53,17 +61,95 @@
     margin-bottom: 10px;
   }
 
+  a {
+    color: var(--md-link);
+    text-decoration: none;
+  }
+
+  a:hover {
+    text-decoration: underline;
+  }
+
+  strong {
+    color: var(--color-gray-100);
+    font-weight: 700;
+  }
+
+  em {
+    color: var(--color-gray-100);
+  }
+
+  mark {
+    padding: 0.1em 0.3em;
+    border-radius: 4px;
+    color: var(--color-neutral-950);
+    background: var(--color-amber-300);
+  }
+
+  ul,
+  ol {
+    margin: 0 0 10px;
+    padding-left: 1.6em;
+  }
+
+  li {
+    margin: 0.2em 0;
+  }
+
+  li::marker {
+    color: var(--md-accent);
+  }
+
+  /* GFM task lists: don't show the bullet next to the checkbox. */
+  li:has(> input[type='checkbox']) {
+    list-style: none;
+    margin-left: -1.2em;
+  }
+
+  li > input[type='checkbox'] {
+    margin-right: 0.5em;
+    accent-color: var(--color-green-500);
+  }
+
+  blockquote {
+    margin: 1em 0;
+    padding: 0.4em 1em;
+    color: var(--color-gray-300);
+    border-left: 4px solid var(--color-violet-400);
+    background: hsl(var(--hsl-violet-400) / 8%);
+    border-radius: 0 6px 6px 0;
+  }
+
+  blockquote > :last-child {
+    margin-bottom: 0;
+  }
+
+  hr {
+    height: 1px;
+    margin: 2em 0;
+    border: 0;
+    background: var(--md-border);
+  }
+
+  img {
+    max-width: 100%;
+    border-radius: 6px;
+  }
+
   :not(pre) > code {
     padding: 0.2em 0.4em;
     font-size: 0.9em;
     border-radius: 6px;
-    background: rgba(255, 255, 255, 0.1);
+    color: var(--color-rose-300);
+    background: var(--md-surface-strong);
   }
 
   pre {
     overflow: auto;
     padding: 1em;
-    border-radius: 6px;
+    margin: 1em 0;
+    border-radius: 8px;
+    border: 1px solid var(--md-border);
   }
 
   pre > code {
@@ -72,5 +158,40 @@
     word-break: normal;
     white-space: pre;
     border: 0;
+    background: transparent;
+    color: inherit;
+  }
+
+  /* Tables: wrap in their own scroll area and give them readable structure. */
+  table {
+    display: block;
+    width: fit-content;
+    max-width: 100%;
+    overflow-x: auto;
+    margin: 1em 0;
+    border-collapse: collapse;
+    border: 1px solid var(--md-border);
+    border-radius: 8px;
+  }
+
+  th,
+  td {
+    padding: 0.5em 0.9em;
+    border: 1px solid var(--md-border);
+    text-align: left;
+  }
+
+  thead th {
+    color: var(--color-blue-300);
+    background: hsl(var(--hsl-blue-500) / 15%);
+    font-weight: 600;
+  }
+
+  tbody tr:nth-child(even) {
+    background: var(--md-surface);
+  }
+
+  tbody tr:hover {
+    background: var(--md-surface-strong);
   }
 }
